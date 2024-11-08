@@ -1,0 +1,5 @@
+streamlit
+pandas
+pydeck
+geopy
+openpyxl  # Required to read Excel files (.xlsx)
