@@ -19,7 +19,7 @@ if uploaded_file is not None:
     # Drop rows with missing or invalid coordinates
     data = data.dropna(subset=['LATITUDE', 'LONGITUDE'])
 
-    st.title("Store Location Map - Indonesia")
+    st.title("Mie Gacoan Store Map - Indonesia")
 
     # Display data if needed
     if st.checkbox("Show Data Table"):
