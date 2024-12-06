@@ -88,14 +88,13 @@ if uploaded_file is not None:
                     loc2 = (store2['LATITUDE'], store2['LONGITUDE'])
                     distance_km = geodesic(loc1, loc2).kilometers
                     
-                    # Include only stores within the selected radius
-                    if distance_km <= radius_km:
-                        distance_data.append({
-                            "City": city,
-                            "Store 1": store1['STORE'],
-                            "Store 2": store2['STORE'],
-                            "Distance (km)": round(distance_km, 2)
-                        })
+                    # Append the information to distance_data
+                    distance_data.append({
+                        "City": city,
+                        "Store 1": store1['STORE'],
+                        "Store 2": store2['STORE'],
+                        "Distance (km)": round(distance_km, 2)
+                    })
 
     # Convert distance data to DataFrame and display it
     distance_df = pd.DataFrame(distance_data)
