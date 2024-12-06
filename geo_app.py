@@ -83,18 +83,19 @@ if uploaded_file is not None:
         # Calculate pairwise distances between stores in the same city
         for i, store1 in city_stores.iterrows():
             for j, store2 in city_stores.iterrows():
-                if i < j:  # Avoid duplicate pairs
+                if i != j:  # Include all pairs, avoid self-pairs
                     loc1 = (store1['LATITUDE'], store1['LONGITUDE'])
                     loc2 = (store2['LATITUDE'], store2['LONGITUDE'])
                     distance_km = geodesic(loc1, loc2).kilometers
                     
-                    # Append the information to distance_data
-                    distance_data.append({
-                        "City": city,
-                        "Store 1": store1['STORE'],
-                        "Store 2": store2['STORE'],
-                        "Distance (km)": round(distance_km, 2)
-                    })
+                    # Include only stores within the selected radius
+                    if distance_km <= radius_km:
+                        distance_data.append({
+                            "City": city,
+                            "Store 1": store1['STORE'],
+                            "Store 2": store2['STORE'],
+                            "Distance (km)": round(distance_km, 2)
+                        })
 
     # Convert distance data to DataFrame and display it
     distance_df = pd.DataFrame(distance_data)
