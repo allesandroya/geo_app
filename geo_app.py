@@ -11,7 +11,7 @@ uploaded_file = st.file_uploader("Upload your Excel file", type=["xlsx"])
 if uploaded_file is not None:
     # Load data from uploaded file
     data = pd.read_excel(uploaded_file)
-
+    
     # Ensure LATITUDE and LONGITUDE are numeric
     data['LATITUDE'] = pd.to_numeric(data['LATITUDE'], errors='coerce')
     data['LONGITUDE'] = pd.to_numeric(data['LONGITUDE'], errors='coerce')
@@ -29,14 +29,15 @@ if uploaded_file is not None:
     radius_km = st.slider("Select Radius (in km)", min_value=0.5, max_value=10.0, value=2.0, step=0.5)
     radius_meters = radius_km * 1000  # Convert to meters
 
-    # Scatterplot layer for store locations (simulating icons)
+    # Define layers for points, radius circles, and text labels
+    # Scatterplot layer for store locations
     scatter_layer = pdk.Layer(
         "ScatterplotLayer",
         data,
         get_position=["LONGITUDE", "LATITUDE"],
         get_radius=500,
-        get_fill_color=[255, 0, 0, 200],  # Red color for simulated icons
-        pickable=True,
+        get_fill_color=[255, 0, 0, 140],
+        pickable=True
     )
 
     # Circle layer for dynamic radius circles around stores
@@ -57,7 +58,7 @@ if uploaded_file is not None:
         get_text="STORE",  # Column name for store names
         get_color=[255, 255, 255],  # White color for text
         get_size=16,
-        get_alignment_baseline="bottom",
+        get_alignment_baseline="'bottom'"
     )
 
     # Center view on the data points
@@ -78,7 +79,7 @@ if uploaded_file is not None:
 
     for city in data['CITY'].unique():
         city_stores = data[data['CITY'] == city]
-
+        
         # Calculate pairwise distances between stores in the same city
         for i, store1 in city_stores.iterrows():
             for j, store2 in city_stores.iterrows():
@@ -86,7 +87,7 @@ if uploaded_file is not None:
                     loc1 = (store1['LATITUDE'], store1['LONGITUDE'])
                     loc2 = (store2['LATITUDE'], store2['LONGITUDE'])
                     distance_km = geodesic(loc1, loc2).kilometers
-
+                    
                     # Append the information to distance_data
                     distance_data.append({
                         "City": city,
