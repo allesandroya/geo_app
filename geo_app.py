@@ -21,6 +21,18 @@ if uploaded_file is not None:
 
     st.title("Mie Gacoan Store Map - Indonesia")
 
+    # Debugging: Display first few rows of data
+    st.subheader("Debug: First Few Rows of Data")
+    st.write(data.head())
+
+    # Debugging: Check column types
+    st.subheader("Debug: Column Data Types")
+    st.write(data.dtypes)
+
+    # Debugging: Check for missing values
+    st.subheader("Debug: Missing Values")
+    st.write(data.isnull().sum())
+
     # Display data if needed
     if st.checkbox("Show Data Table"):
         st.write(data)
@@ -30,7 +42,11 @@ if uploaded_file is not None:
     radius_meters = radius_km * 1000  # Convert to meters
 
     # Combine store name and Avg Sales for display
-    data['DISPLAY_TEXT'] = data['STORE'] + "\nAvg Sales: " + data['Avg Sales'].astype(str)
+    if 'Avg Sales' in data.columns:
+        data['DISPLAY_TEXT'] = data['STORE'] + "\nAvg Sales: " + data['Avg Sales'].fillna("N/A").astype(str)
+    else:
+        st.warning("The 'Avg Sales' column is missing from the dataset. Defaulting to STORE names only.")
+        data['DISPLAY_TEXT'] = data['STORE']
 
     # Scatterplot layer for store locations (simulating icons)
     scatter_layer = pdk.Layer(
@@ -59,8 +75,8 @@ if uploaded_file is not None:
         get_position=["LONGITUDE", "LATITUDE"],
         get_text="DISPLAY_TEXT",  # Combined store name and Avg Sales
         get_color=[255, 255, 255],  # White color for text
-        get_size=16,
-        get_alignment_baseline="bottom",
+        get_size=24,  # Increased size for better visibility
+        get_alignment_baseline="center",
     )
 
     # Center view on the data points
@@ -69,6 +85,10 @@ if uploaded_file is not None:
         longitude=data['LONGITUDE'].mean(),
         zoom=6,
     )
+
+    # Debugging: Log map layers
+    st.subheader("Debug: Map Layers")
+    st.write({"ScatterplotLayer": scatter_layer, "CircleLayer": circle_layer, "TextLayer": text_layer})
 
     # Render map with layers
     st.pydeck_chart(pdk.Deck(layers=[scatter_layer, circle_layer, text_layer], initial_view_state=view_state))
