@@ -29,31 +29,21 @@ if uploaded_file is not None:
     radius_km = st.slider("Select Radius (in km)", min_value=0.5, max_value=10.0, value=2.0, step=0.5)
     radius_meters = radius_km * 1000  # Convert to meters
 
-    # Ensure ICON_URL column has valid URLs
+    # Ensure ICON_URL column exists
     if 'ICON_URL' not in data.columns:
         st.error("The dataset must include an 'ICON_URL' column with valid image URLs.")
     else:
-        # Add default icon mapping (required for IconLayer to work)
-        icon_mapping = {
-            "default": {
-                "url": "https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png",
-                "width": 128,
-                "height": 128,
-                "anchorY": 128
-            }
-        }
+        # Use a sample icon for testing if ICON_URL is not set properly
+        data['ICON_URL'] = data['ICON_URL'].fillna("https://i.imgur.com/WB1AK5n.png")
 
         # Define an IconLayer for custom icons
         icon_layer = pdk.Layer(
             "IconLayer",
             data,
             get_position=["LONGITUDE", "LATITUDE"],
-            get_icon="default",  # Use a default icon mapping
-            get_size=4,           # Adjust the size of the icons
-            size_scale=10,        # Scale factor for icon size
+            get_icon="ICON_URL",
+            size_scale=10,
             pickable=True,
-            icon_atlas="https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png",
-            icon_mapping=icon_mapping,
         )
 
         # Circle layer for dynamic radius circles around stores
