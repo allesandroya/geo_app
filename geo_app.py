@@ -29,53 +29,46 @@ if uploaded_file is not None:
     radius_km = st.slider("Select Radius (in km)", min_value=0.5, max_value=10.0, value=2.0, step=0.5)
     radius_meters = radius_km * 1000  # Convert to meters
 
-    # Ensure ICON_URL column exists
-    if 'ICON_URL' not in data.columns:
-        st.error("The dataset must include an 'ICON_URL' column with valid image URLs.")
-    else:
-        # Use a sample icon for testing if ICON_URL is not set properly
-        data['ICON_URL'] = data['ICON_URL'].fillna("https://i.imgur.com/WB1AK5n.png")
+    # Scatterplot layer for store locations (simulating icons)
+    scatter_layer = pdk.Layer(
+        "ScatterplotLayer",
+        data,
+        get_position=["LONGITUDE", "LATITUDE"],
+        get_radius=500,
+        get_fill_color=[255, 0, 0, 200],  # Red color for simulated icons
+        pickable=True,
+    )
 
-        # Define an IconLayer for custom icons
-        icon_layer = pdk.Layer(
-            "IconLayer",
-            data,
-            get_position=["LONGITUDE", "LATITUDE"],
-            get_icon="ICON_URL",
-            size_scale=10,
-            pickable=True,
-        )
+    # Circle layer for dynamic radius circles around stores
+    circle_layer = pdk.Layer(
+        "ScatterplotLayer",
+        data,
+        get_position=["LONGITUDE", "LATITUDE"],
+        get_radius=radius_meters,
+        get_fill_color=[0, 255, 0, 80],
+        stroked=True,
+    )
 
-        # Circle layer for dynamic radius circles around stores
-        circle_layer = pdk.Layer(
-            "ScatterplotLayer",
-            data,
-            get_position=["LONGITUDE", "LATITUDE"],
-            get_radius=radius_meters,
-            get_fill_color=[0, 255, 0, 80],
-            stroked=True,
-        )
+    # Text layer for store names
+    text_layer = pdk.Layer(
+        "TextLayer",
+        data,
+        get_position=["LONGITUDE", "LATITUDE"],
+        get_text="STORE",  # Column name for store names
+        get_color=[255, 255, 255],  # White color for text
+        get_size=16,
+        get_alignment_baseline="bottom",
+    )
 
-        # Text layer for store names
-        text_layer = pdk.Layer(
-            "TextLayer",
-            data,
-            get_position=["LONGITUDE", "LATITUDE"],
-            get_text="STORE",  # Column name for store names
-            get_color=[255, 255, 255],  # White color for text
-            get_size=16,
-            get_alignment_baseline="bottom",
-        )
+    # Center view on the data points
+    view_state = pdk.ViewState(
+        latitude=data['LATITUDE'].mean(),
+        longitude=data['LONGITUDE'].mean(),
+        zoom=6,
+    )
 
-        # Center view on the data points
-        view_state = pdk.ViewState(
-            latitude=data['LATITUDE'].mean(),
-            longitude=data['LONGITUDE'].mean(),
-            zoom=6,
-        )
-
-        # Render map with layers
-        st.pydeck_chart(pdk.Deck(layers=[icon_layer, circle_layer, text_layer], initial_view_state=view_state))
+    # Render map with layers
+    st.pydeck_chart(pdk.Deck(layers=[scatter_layer, circle_layer, text_layer], initial_view_state=view_state))
 
     # Calculate distances between stores in the same city
     st.subheader("Distances Between Stores in the Same City")
