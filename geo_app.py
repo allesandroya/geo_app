@@ -55,7 +55,7 @@ if uploaded_file is not None:
         "TextLayer",
         data,
         get_position=["LONGITUDE", "LATITUDE"],
-        get_text="STORE",  # Column name for store names
+        get_text="DISPLAY_TEXT",  # Column name for store names
         get_color=[255, 255, 255],  # White color for text
         get_size=16,
         get_alignment_baseline="'bottom'"
