@@ -3,7 +3,7 @@ import pandas as pd
 import pydeck as pdk
 from geopy.distance import geodesic  # For calculating distances
 
-st.title("Store Location Map - Indonesia")
+st.title("Store Location Map - by @allesandroya")
 
 # File uploader
 uploaded_file = st.file_uploader("Upload your Excel file", type=["xlsx"])
@@ -19,7 +19,7 @@ if uploaded_file is not None:
     # Drop rows with missing or invalid coordinates
     data = data.dropna(subset=['LATITUDE', 'LONGITUDE'])
 
-    st.title("Mie Gacoan Store Map - Indonesia")
+    st.title("Store Location Map - Indonesia")
 
     # Display data if needed
     if st.checkbox("Show Data Table"):
