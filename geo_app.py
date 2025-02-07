@@ -25,6 +25,12 @@ if uploaded_file is not None:
     if st.checkbox("Show Data Table"):
         st.write(data)
 
+def get_color(value):
+return [0, 255, 0, 128] if value > 0 else [255, 0, 0, 128]
+
+# Apply the function to create a new 'color' column.
+df["color"] = df["VALUE"].apply(get_color)
+
     # Slider for radius with 0.5 km steps
     radius_km = st.slider("Select Radius (in km)", min_value=0.5, max_value=10.0, value=2.0, step=0.5)
     radius_meters = radius_km * 1000  # Convert to meters
@@ -36,7 +42,7 @@ if uploaded_file is not None:
         data,
         get_position=["LONGITUDE", "LATITUDE"],
         get_radius=500,
-        get_fill_color=[255, 0, 0, 140],
+        get_fill_color="color",
         pickable=True
     )
 
@@ -46,7 +52,7 @@ if uploaded_file is not None:
         data,
         get_position=["LONGITUDE", "LATITUDE"],
         get_radius=radius_meters,
-        get_fill_color=[0, 255, 0, 80],
+        get_fill_color="color",
         stroked=True,
     )
 
