@@ -26,7 +26,7 @@ if uploaded_file is not None:
         st.write(data)
 
 def get_color(value):
-return [0, 255, 0, 128] if value > 0 else [255, 0, 0, 128]
+    return [0, 255, 0, 128] if value > 0 else [255, 0, 0, 128]
 
 # Apply the function to create a new 'color' column.
 df["color"] = df["VALUE"].apply(get_color)
