@@ -29,7 +29,8 @@ if uploaded_file is not None:
         return [0, 255, 0, 128] if value > 0 else [255, 0, 0, 128]
 
 # Apply the function to create a new 'color' column.
-    df["color"] = df["VALUE"].apply(get_color)
+    data["color"] = data["VALUE"].apply(get_color)
+
 
     # Slider for radius with 0.5 km steps
     radius_km = st.slider("Select Radius (in km)", min_value=0.5, max_value=10.0, value=2.0, step=0.5)
